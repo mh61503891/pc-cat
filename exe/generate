@@ -3,10 +3,11 @@
 require 'action_view'
 require 'action_pack'
 require 'srt'
+require 'hashie'
 
 class View < ActionView::Base
 
-  def initialize(assigns)
+  def initialize(assigns = {})
     paths = ['app/views']
     lookup_context = ActionView::LookupContext.new(paths)
     super(lookup_context, assigns)
@@ -18,20 +19,53 @@ class View < ActionView::Base
 
 end
 
-output_path = Pathname.new(__FILE__).join('../../public/sample.html')
-@slug = '001-windows-open-application'
-@srt = SRT::File.parse(File.new(Pathname.new(__FILE__).join("../../public/assets/videos/#{@slug}.srt")))
+class Generator
 
-view = View
-  .new(slug: @slug, srt: @srt)
-  .render({
-    layout: 'layouts/application',
-    template: 'show',
-    prefixes: 'contents'})
+  def initialize
+    @routes = Hashie::Mash.load('app/routes.yaml')
+    @output_dir_path = Pathname.new(__FILE__).join('../../docs')
+  end
+
+  def run
+    generate(@routes.root)    
+  end
+
+  def generate(entry)
+    view = View
+      .new({
+        title: entry.assigns.title,
+        subtitle: entry.assigns.subtitle
+      }.compact)
+      .render({
+        layout: entry.view.layout || 'layouts/application',
+        prefixes: entry.view.prefixes,
+        template: entry.view.template
+      }.compact)
+    output_file_path = @output_dir_path.join(entry.path)
+    File.open(output_file_path, 'wb') { |io|
+      io.puts(view)
+    }
+  end
+
+end
+
+Generator.new.run
+return
+
 
 # require 'pry'
 # binding.pry
 
-File.open(output_path, 'wb') { |io|
-  io.puts view
-}
+
+
+# output_path = Pathname.new(__FILE__).join('../../docs/sample.html')
+# @slug = '001-windows-open-application'
+# @srt = SRT::File.parse(File.new(Pathname.new(__FILE__).join("../../docs/assets/videos/#{@slug}.srt")))
+
+# view = View
+#   .new(slug: @slug, srt: @srt)
+#   .render({
+#     layout: 'layouts/application',
+#     template: 'show',
+#     prefixes: 'contents'})
+
