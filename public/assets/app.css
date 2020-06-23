@@ -1,0 +1,7 @@
+.embed-responsive-16by10::before {
+  padding-top: 62.50%;
+}
+
+.sticky-top {
+  top: 1em;
+}

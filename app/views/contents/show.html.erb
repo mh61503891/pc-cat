@@ -1,0 +1,43 @@
+<nav class="navbar navbar-light bg-light mb-3">
+    <a class="navbar-brand " href="">情報リテラシ | コンピュータ演習</a>
+  </nav>
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">基本操作</a></li>
+        <li class="breadcrumb-item active" aria-current="page">アプリケーションの起動</li>
+      </ol>
+    </nav>
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="embed-responsive embed-responsive-16by10 sticky-top">
+          <video id="video" class="embed-responsive-item" controls preload="none"
+            poster="assets/posters/<%= @slug %>.png">
+            <source src="assets/videos/<%= @slug %>.mp4" srclang="ja" type="video/mp4">
+            <track kind="subtitles" label="Japanese" src="assets/videos/<%= @slug %>.vtt" srclang="ja" default />
+          </video>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <h4>アプリケーションの起動</h4>
+        <p>この動画では様々なアプリケーションの起動方法について解説します。</p>
+        <% @srt.lines.each.with_index(1) do |line, index| %>
+        <% id = "#{@slug}-#{index}" %>
+        <div class="media position-relative" id="<%= id %>" data-start-time="<%= line.start_time %>" data-end-time="<%= line.end_time %>" data-title="<%= line.text[0] %>" data-text="<%= line.text[1] %>">
+          <div class="media-body">
+            <h5 class="mt-0">
+              <span class="badge badge-primary"><%= index %></span>
+              <span><%= line.text[0] %></span>
+            </h5>
+            <p>
+              <span><%= line.text[1] %></span>
+              <span class="badge badge-pill badge-light"><%= (line.end_time - line.start_time).to_i %>秒</span>
+              <a href="javascript:test2('<%= id %>');" class="btn btn-sm btn-light"><i data-feather="play-circle">再生</i></a>
+            </p>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
