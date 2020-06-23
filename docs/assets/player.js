@@ -114,6 +114,10 @@ window.onload = function () {
   player.video.addEventListener('play', () => { player.onPlay() });
   player.video.addEventListener('pause', () => { player.onPause() });
   player.video.addEventListener('timeupdate', () => { player.onTimeupdate() });
+  document.addEventListener('visibilitychange', function () {
+    player.video.pause();
+    speechSynthesis.cancel();
+  });
 }
 
 function runPlayer(id) {
