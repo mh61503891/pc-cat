@@ -2,7 +2,7 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-      <a href="<%= @root_path %>">コンピュータ演習</a>
+        <a href="../"><%= @website_subtitle %></a>
       </li>
       <li class="breadcrumb-item active" aria-current="page"><%= @page_title %></li>
     </ol>
@@ -15,7 +15,7 @@
           <div class="media-body">
             <h5 class="mt-0 mb-2"><%= content.title %></h5>
             <p><span><%= content.description %></span></p>
-            <p><a href="<%= content.url %>" class="btn btn-sm btn-primary stretched-link">閲覧</a></p>
+            <p><a href="./<%= content.key %>.html" class="btn btn-sm btn-primary stretched-link">閲覧</a></p>
           </div>
         </div>
         <hr>

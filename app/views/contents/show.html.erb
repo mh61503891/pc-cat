@@ -1,38 +1,39 @@
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<%= @category_url %>"><%= @category_title %></a></li>
-        <li class="breadcrumb-item active" aria-current="page"><%= @page_title %></li>
-      </ol>
-    </nav>
-    <div class="row">
-      <div class="col-sm-8">
-        <div class="embed-responsive embed-responsive-16by10 sticky-top">
-          <video id="video" class="embed-responsive-item" controls preload="none" poster="<%= @video_poster_url %>">
-            <source src="<%= @video_src_url %>" srclang="ja" type="video/mp4">
-          </video>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <h4><%= @page_title %></h4>
-        <p><%= @page_description %></p>
-        <% @video_track.lines.each.with_index(1) do |line, index| %>
-        <% id = "#{@slug}-#{index}" %>
-        <div class="media position-relative" id="<%= id %>" data-start-time="<%= line.start_time %>" data-end-time="<%= line.end_time %>" data-title="<%= line.text[0] %>" data-text="<%= line.text[1] %>">
-          <div class="media-body">
-            <h5 class="mt-0">
-              <span class="badge badge-primary"><%= index %></span>
-              <span><%= line.text[0] %></span>
-            </h5>
-            <p>
-              <span><%= line.text[1] %></span>
-              <span class="badge badge-pill badge-light"><%= (line.end_time - line.start_time).to_i %>秒</span>
-              <a href="javascript:test2('<%= id %>');" class="btn btn-sm btn-light"><i data-feather="play-circle">再生</i></a>
-            </p>
-          </div>
-        </div>
-        <% end %>
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="../../"><%= @website_subtitle %></a></li>
+      <li class="breadcrumb-item"><a href="./"><%= @content.category.title %></a></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= @content.title %></li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="embed-responsive embed-responsive-16by10 sticky-top">
+        <video id="video" class="embed-responsive-item" controls preload="none" poster="<%= @content.video_poster_url %>">
+          <source src="<%= @content.video_src_url %>" type="video/mp4">
+        </video>
       </div>
     </div>
-
+    <div class="col-sm-4">
+      <h4><%= @content.title %></h4>
+      <p><%= @content.description %></p>
+      <% @video_track.lines.each.with_index(1) do |line, index| %>
+      <% id = "#{@content.key}-#{index}" %>
+      <div class="media position-relative" id="<%= id %>" data-start-time="<%= line.start_time %>" data-end-time="<%= line.end_time %>" data-title="<%= line.text[0] %>" data-text="<%= line.text[1] %>">
+        <div class="media-body">
+          <h5 class="mt-0">
+            <span class="badge badge-warning"><%= index %></span>
+            <span><%= line.text[0] %></span>
+          </h5>
+          <p>
+            <span><%= line.text[1] %></span>
+            <span class="badge badge-pill badge-light"><%= (line.end_time - line.start_time).to_i %>秒</span>
+            <a href="javascript:runPlayer('<%= id %>');" class="btn btn-sm btn-light"><i data-feather="play-circle">再生</i></a>
+          </p>
+        </div>
+      </div>
+      <% end %>
+    </div>
   </div>
+</div>
+<script src="<%= Pathname.new(@root_path).join('assets/player.js').to_s %>"></script>

@@ -32,21 +32,20 @@ end
 ActiveRecord::Base.connection.add_index :contents, [:key], unique: true
 
 class Category < ActiveRecord::Base
-
-  def url
-    "#{key}"
-  end
-
 end
 
 class Content < ActiveRecord::Base
 
-  def url
-    "#{category_key}/#{key}.html"
+  def category
+    Category.find_by(key: category_key)
   end
 
   def video_poster_url
     URI.join(AppConfig.contents_base_url, "#{category_key}/#{key}.png").to_s
+  end
+
+  def video_src_url
+    URI.join(AppConfig.contents_base_url, "#{category_key}/#{key}.mp4").to_s
   end
 
 end
@@ -94,7 +93,7 @@ class Generator
   def run
     generate_root_page
     generate_category_pages
-    # generate_contents
+    generate_content_pages
   end
 
   def generate_root_page
@@ -125,7 +124,6 @@ class Generator
   end
 
   def generate_category_page(category)
-    STDERR.puts('Generate Category Page:'.green)
     entry = {
       assigns: {
         website_title: @config.website_title,
@@ -145,31 +143,29 @@ class Generator
     generate(Hashie::Mash.new(entry))
   end
 
-  def generate_contents
-    contents = CSV.read('app/contents.csv', headers: true)
-    contents.each do |row|
-      params = {
-        page_key: row['key'],
-        page_title: row['title'],
-        page_description: row['description']
-      }
-      generate_content(params)
+  def generate_content_pages
+    STDERR.puts('Generate Content Pages:'.green)
+    Content.all.each do |content|
+      generate_content_page(content)
     end
   end
 
-  def generate_content(page_key:, page_title:, page_description:)
-    video_track = SRT::File.parse(File.new(Pathname.new(__FILE__).join('../..', "docs/assets/tracks/#{page_key}.srt")))
+  def generate_content_page(content)
+    video_track = SRT::File.parse(File.new(Pathname.new(__FILE__).join('../..', "docs/assets/tracks/#{content.category_key}/#{content.key}.srt")))
     entry = {
       assigns: {
-        category_url: './',
-        category_title: '基本操作',
         website_title: @config.website_title,
         website_subtitle: @config.website_subtitle,
-        page_title: page_title,
-        page_description: page_description,
+        page_title: content.title,
+        page_description: content.description,
         video_track: video_track,
-        video_poster_url: URI.join(@config.contents_base_url, "#{page_key}.png").to_s,
-        video_src_url: URI.join(@config.contents_base_url, "#{page_key}.mp4").to_s,
+        content: content,
+
+      #   category_url: './',
+      #   category_title: '基本操作',
+      #   page_description: page_description,
+      #   video_poster_url: URI.join(@config.contents_base_url, "#{page_key}.png").to_s,
+      #   video_src_url: URI.join(@config.contents_base_url, "#{page_key}.mp4").to_s,
         root_path: '../',
       },
       view: {
@@ -177,7 +173,7 @@ class Generator
         prefixes: 'contents',
         template: 'show'
       },
-      path: "contents/#{page_key}.html"
+      path: "#{content.category_key}/#{content.key}.html"
     }
     generate(Hashie::Mash.new(entry))
   end
