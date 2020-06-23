@@ -1,4 +1,10 @@
-## PC-CAT
+# PC-CAT
+
+## Usage
+
+```sh
+$ pip install python-swiftclient
+```
 
 ## Dependencies
 
