@@ -1,52 +1,60 @@
 class Player {
 
-  constructor(id) {
-    this.id = id;
+  run(id) {
+    this.runVideo(id);
+    this.runSpeech(id);
   }
 
-  run() {
-    this.runSpeech();
+  runVideo(id) {
+    if (this.currentVideoId === undefined) {
+      this.playVideo(id);
+    } else {
+      if (this.currentVideoId === id) {
+        if (this.video.paused) {
+          this.video.play();
+        } else {
+          this.video.pause();
+        }
+      } else {
+        this.playVideo(id);
+      }
+    }
   }
 
-  get onplaying() {
-    if (this.video.onplaying)
-      return true;
-    if (speechSynthesis.speaking)
-      return true;
-    return false;
-  }
-
-  playVideo() {
-    this.video.currentTime = this.startTime;
+  playVideo(id) {
+    this.currentVideoId = id;
+    this.video.currentTime = this.getStartTime(id);
+    this.video.pause();
     this.video.play();
   }
 
-  runSpeech() {
-    if (speechSynthesis.speaking) {
-      speechSynthesis.pause();
-    } else if (speechSynthesis.paused) {
-      speechSynthesis.resume();
+  runSpeech(id) {
+    if (this.currentSpeechId === undefined) {
+      this.playSpeech(id);
     } else {
-      this.playSpeech();
+      if (this.currentSpeechId === id) {
+        if (speechSynthesis.paused) {
+          speechSynthesis.resume();
+        } else {
+          speechSynthesis.pause();
+        }
+      } else {
+        this.playSpeech(id);
+      }
     }
   }
 
-  playSpeech() {
-    if (speechSynthesis.paused) {
-      speechSynthesis.resume();
-    } else {
-      let synthes = new SpeechSynthesisUtterance(this.text)
-      synthes.rate = 0.9;
-      synthes.lang = 'ja-JP';
-      speechSynthesis.speak(synthes);
-    }
-    $('#' + this.id + " div p a svg.feather.feather-play-circle").replaceWith(feather.icons['pause-circle'].toSvg());
-  }
-
-  pauseSpeech() {
-    if (speechSynthesis.speaking)
-      speechSynthesis.pause();
-    $('#' + this.id + " div p a svg.feather.feather-pause-circle").replaceWith(feather.icons['play-circle'].toSvg());
+  playSpeech(id) {
+    this.currentSpeechId = id;
+    let text = `${this.getEntry(id).data('title')}について解説します。${this.getEntry(id).data('text')}`;;
+    let synthes = new SpeechSynthesisUtterance(text);
+    synthes.rate = 0.9;
+    synthes.lang = 'ja-JP';
+    synthes.onend = (e) => {
+      this.currentSpeechId = undefined;
+    };
+    speechSynthesis.cancel();
+    speechSynthesis.speak(synthes);
   }
 
   get video() {
@@ -56,72 +64,58 @@ class Player {
     return this._video;
   }
 
-  get entry() {
-    if (this._entry === undefined) {
-      this._entry = $(`#${this.id}`);
+  getEntry(id) {
+    return $(`#${id}`);
+  }
+
+  getStartTime(id) {
+    return parseFloat(this.getEntry(id).data('start-time'));
+  }
+
+  getEndTime(id) {
+    return parseFloat(this.getEntry(id).data('end-time'));
+  }
+
+  onPlay() {
+    $('#' + this.currentVideoId + " div p a svg.feather.feather-play-circle")
+      .replaceWith(feather.icons['pause-circle'].toSvg());
+  }
+
+  onPause() {
+    $("svg.feather.feather-pause-circle")
+      .replaceWith(feather.icons['play-circle'].toSvg());
+  }
+
+  onTimeupdate() {
+    let t = this.video.currentTime;
+    if (t === 0) {
+      return;
     }
-    return this._entry;
-  }
-
-  get startTime() {
-    return parseFloat(this.entry.data('start-time'));
-  }
-
-  get endTime() {
-    return parseFloat(this.entry.data('end-time'));
-  }
-
-  get text() {
-    return `${this.entry.data('title')}について解説します。${this.entry.data('text')}`;
+    let startTime = this.getStartTime(this.currentVideoId);
+    if (t < startTime) {
+      this.video.pause();
+      this.currentVideoId = undefined;
+      return;
+    }
+    let endTime = this.getEndTime(this.currentVideoId);
+    if (endTime < t) {
+      this.video.pause();
+      this.currentVideoId = undefined;
+      return;
+    }
   }
 
 }
 
 let player;
 
-let video;
-
-function videoOnPlay() {
-  console.log('videoOnPlay: ', speechSynthesis);
-  if (speechSynthesis.paused) {
-    speechSynthesis.resume();
-  }
-}
-
-function videoOnPause() {
-  console.log('videoPnPause: ', speechSynthesis);
-  // if (speechSynthesis.speaking) {
-  //   speechSynthesis.pause();
-  // }
-}
-
-function videoOnTimeUpdate() {
-  let t = player.video.currentTime;
-  if (t !== 0) {
-    console.log(t);
-    console.log([t, player.startTime, player.endTime])
-    if (t < player.startTime || player.endTime < t) {
-      media.pause();
-    }
-  }
-}
-
 window.onload = function () {
-  media = document.getElementById('video');
-  video = media;
+  player = new Player();
+  player.video.addEventListener('play', () => { player.onPlay() });
+  player.video.addEventListener('pause', () => { player.onPause() });
+  player.video.addEventListener('timeupdate', () => { player.onTimeupdate() });
+}
 
-  video.addEventListener('play', videoOnPlay);
-  video.addEventListener('pause', videoOnPause);
-  video.addEventListener('timeupdate', videoOnTimeUpdate);
-
-  document.addEventListener("visibilitychange", function () {
-    media.pause();
-    console.log('aa');
-    speechSynthesis.cancel();
-  });
-};
-
-function test2(id) {
-  player = new Player(id);
-  player.run();
+function runPlayer(id) {
+  player.run(id);
 }
