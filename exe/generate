@@ -2,8 +2,73 @@
 
 require 'action_view'
 require 'action_pack'
-require 'srt'
 require 'hashie'
+require 'csv'
+require 'srt'
+require 'colorize'
+require 'sqlite3'
+require 'active_record'
+
+AppConfig = Hashie::Mash.load('app/config.yaml')
+
+ActiveRecord::Base.establish_connection({
+  adapter: 'sqlite3',
+  database: ':memory:'
+})
+
+ActiveRecord::Base.connection.create_table(:categories) do |t|
+  t.string :key, null: false
+  t.string :title, null: false
+  t.string :description, null: false
+end
+ActiveRecord::Base.connection.add_index :categories, [:key], unique: true
+
+ActiveRecord::Base.connection.create_table(:contents) do |t|
+  t.string :category_key, null: false
+  t.string :key, null: false
+  t.string :title, null: false
+  t.string :description, null: false
+end
+ActiveRecord::Base.connection.add_index :contents, [:key], unique: true
+
+class Category < ActiveRecord::Base
+
+  def url
+    "#{key}"
+  end
+
+end
+
+class Content < ActiveRecord::Base
+
+  def url
+    "#{category_key}/#{key}.html"
+  end
+
+  def video_poster_url
+    URI.join(AppConfig.contents_base_url, "#{category_key}/#{key}.png").to_s
+  end
+
+end
+
+CSV.read('app/categories.csv', headers: true).each do |row|
+  params = {
+    key: row['key'],
+    title: row['title'],
+    description: row['description'],
+  }
+  Category.create!(params)
+end
+
+CSV.read('app/contents.csv', headers: true).each do |row|
+  params = {
+    key: row['key'],
+    category_key: row['category_key'],
+    title: row['title'],
+    description: row['description'],
+  }
+  Content.create!(params)
+end
 
 class View < ActionView::Base
 
@@ -22,50 +87,117 @@ end
 class Generator
 
   def initialize
-    @routes = Hashie::Mash.load('app/routes.yaml')
-    @output_dir_path = Pathname.new(__FILE__).join('../../docs')
+    @config = Hashie::Mash.load('app/config.yaml')
+    @output_dir_path = Pathname.new(__FILE__).join('../..', @config.output_dir_path)
   end
 
   def run
-    generate(@routes.root)    
+    generate_root_page
+    generate_category_pages
+    # generate_contents
+  end
+
+  def generate_root_page
+    STDERR.puts('Generate Root Page:'.green)
+    entry = {
+      assigns: {
+        website_title: @config.website_title,
+        website_subtitle: @config.website_subtitle,
+        page_title: 'カテゴリの一覧',
+        categories: Category.all,
+        root_path: './'
+      },
+      view: {
+        layout: 'layouts/application',
+        template: 'root'
+      },
+      path: 'index.html'
+    }
+    generate(Hashie::Mash.new(entry))
+  end
+
+
+  def generate_category_pages
+    STDERR.puts('Generate Category Pages:'.green)
+    Category.all.each do |category|
+      generate_category_page(category)
+    end
+  end
+
+  def generate_category_page(category)
+    STDERR.puts('Generate Category Page:'.green)
+    entry = {
+      assigns: {
+        website_title: @config.website_title,
+        website_subtitle: @config.website_subtitle,
+        page_title: category.title,
+        category: category,
+        contents: Content.where(category_key: category.key),
+        root_path: '../',
+      },
+      view: {
+        layout: 'layouts/application',
+        prefixes: 'contents',
+        template: 'index'
+      },
+      path: "#{category.key}/index.html"
+    }
+    generate(Hashie::Mash.new(entry))
+  end
+
+  def generate_contents
+    contents = CSV.read('app/contents.csv', headers: true)
+    contents.each do |row|
+      params = {
+        page_key: row['key'],
+        page_title: row['title'],
+        page_description: row['description']
+      }
+      generate_content(params)
+    end
+  end
+
+  def generate_content(page_key:, page_title:, page_description:)
+    video_track = SRT::File.parse(File.new(Pathname.new(__FILE__).join('../..', "docs/assets/tracks/#{page_key}.srt")))
+    entry = {
+      assigns: {
+        category_url: './',
+        category_title: '基本操作',
+        website_title: @config.website_title,
+        website_subtitle: @config.website_subtitle,
+        page_title: page_title,
+        page_description: page_description,
+        video_track: video_track,
+        video_poster_url: URI.join(@config.contents_base_url, "#{page_key}.png").to_s,
+        video_src_url: URI.join(@config.contents_base_url, "#{page_key}.mp4").to_s,
+        root_path: '../',
+      },
+      view: {
+        layout: 'layouts/application',
+        prefixes: 'contents',
+        template: 'show'
+      },
+      path: "contents/#{page_key}.html"
+    }
+    generate(Hashie::Mash.new(entry))
   end
 
   def generate(entry)
-    view = View
-      .new({
-        title: entry.assigns.title,
-        subtitle: entry.assigns.subtitle
-      }.compact)
-      .render({
-        layout: entry.view.layout || 'layouts/application',
-        prefixes: entry.view.prefixes,
-        template: entry.view.template
-      }.compact)
+    view = View.new(entry.assigns).render(entry.view)
+
     output_file_path = @output_dir_path.join(entry.path)
+    category_dir_path = output_file_path.dirname
+    if !category_dir_path.exist?
+      category_dir_path.mkdir
+      STDERR.puts("mkdir: #{category_dir_path}".yellow)
+    end
     File.open(output_file_path, 'wb') { |io|
       io.puts(view)
     }
+
+    STDERR.puts("generate: #{output_file_path}".yellow)
   end
 
 end
 
 Generator.new.run
-return
-
-
-# require 'pry'
-# binding.pry
-
-
-
-# output_path = Pathname.new(__FILE__).join('../../docs/sample.html')
-# @slug = '001-windows-open-application'
-# @srt = SRT::File.parse(File.new(Pathname.new(__FILE__).join("../../docs/assets/videos/#{@slug}.srt")))
-
-# view = View
-#   .new(slug: @slug, srt: @srt)
-#   .render({
-#     layout: 'layouts/application',
-#     template: 'show',
-#     prefixes: 'contents'})
-

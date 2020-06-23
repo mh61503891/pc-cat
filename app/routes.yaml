@@ -1,7 +1,0 @@
-root:
-  assigns:
-    title: 情報リテラシ
-    subtitle: コンピュータ演習
-  view:
-    template: root
-  path: index.html

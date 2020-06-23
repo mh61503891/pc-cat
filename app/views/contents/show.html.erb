@@ -1,27 +1,22 @@
-<nav class="navbar navbar-light bg-light mb-3">
-    <a class="navbar-brand " href="">情報リテラシ | コンピュータ演習</a>
-  </nav>
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">基本操作</a></li>
-        <li class="breadcrumb-item active" aria-current="page">アプリケーションの起動</li>
+        <li class="breadcrumb-item"><a href="<%= @category_url %>"><%= @category_title %></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @page_title %></li>
       </ol>
     </nav>
     <div class="row">
       <div class="col-sm-8">
         <div class="embed-responsive embed-responsive-16by10 sticky-top">
-          <video id="video" class="embed-responsive-item" controls preload="none"
-            poster="assets/posters/<%= @slug %>.png">
-            <source src="assets/videos/<%= @slug %>.mp4" srclang="ja" type="video/mp4">
-            <track kind="subtitles" label="Japanese" src="assets/videos/<%= @slug %>.vtt" srclang="ja" default />
+          <video id="video" class="embed-responsive-item" controls preload="none" poster="<%= @video_poster_url %>">
+            <source src="<%= @video_src_url %>" srclang="ja" type="video/mp4">
           </video>
         </div>
       </div>
       <div class="col-sm-4">
-        <h4>アプリケーションの起動</h4>
-        <p>この動画では様々なアプリケーションの起動方法について解説します。</p>
-        <% @srt.lines.each.with_index(1) do |line, index| %>
+        <h4><%= @page_title %></h4>
+        <p><%= @page_description %></p>
+        <% @video_track.lines.each.with_index(1) do |line, index| %>
         <% id = "#{@slug}-#{index}" %>
         <div class="media position-relative" id="<%= id %>" data-start-time="<%= line.start_time %>" data-end-time="<%= line.end_time %>" data-title="<%= line.text[0] %>" data-text="<%= line.text[1] %>">
           <div class="media-body">

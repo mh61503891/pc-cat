@@ -1,1 +1,26 @@
-This is a test page.
+<div class="container">
+
+  <div class="alert alert-danger" role="alert">
+    2020/06/23: このウェブサイトは現在作成中です。
+  </div>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page"><%= @page_title %></li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div class="col-sm-12">
+      <% @categories.each do |category| %>
+       <div class="media position-relative mb-3">
+          <div class="media-body">
+            <h5 class="mt-0 mb-2"><%= category.title %></h5>
+            <p><span><%= category.description %></span></p>
+            <p><a href="<%= category.url %>" class="btn btn-sm btn-primary stretched-link">閲覧</a></p>
+          </div>
+        </div>
+        <hr>
+      <% end %>
+    </div>
+  </div>
+</div>
