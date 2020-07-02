@@ -151,7 +151,12 @@ class Generator
   end
 
   def generate_content_page(content)
-    video_track = SRT::File.parse(File.new(Pathname.new(__FILE__).join('../..', "docs/assets/tracks/#{content.category_key}/#{content.key}.srt")))
+    video_track = nil
+    begin
+      video_track = SRT::File.parse(File.new(Pathname.new(__FILE__).join('../..', "docs/assets/tracks/#{content.category_key}/#{content.key}.srt")))
+    rescue => e
+      STDERR.puts(e.message.red)
+    end
     entry = {
       assigns: {
         website_title: @config.website_title,

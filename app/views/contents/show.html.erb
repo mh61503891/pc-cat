@@ -17,7 +17,7 @@
     <div class="col-sm-4">
       <h4><%= @content.title %></h4>
       <p><%= @content.description %></p>
-      <% @video_track.lines.each.with_index(1) do |line, index| %>
+      <% @video_track&.lines&.each&.with_index(1) do |line, index| %>
       <% id = "#{@content.key}-#{index}" %>
       <div class="media position-relative" id="<%= id %>" data-start-time="<%= line.start_time %>" data-end-time="<%= line.end_time %>" data-title="<%= line.text[0] %>" data-text="<%= line.text[1] %>">
         <div class="media-body">
