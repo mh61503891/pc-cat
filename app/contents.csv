@@ -1,2 +1,11 @@
 category_key,key,title,description
 microsoft-windows,001-open-application,アプリケーションの起動,この動画では様々なアプリケーションの起動方法について解説します。
+microsoft-word,001-microsoft-word-open-application,Microsoft Wordの起動と白紙文書の新規作成,この動画ではMicrosoft Wordの起動と白紙文書の作成方法について解説します。
+microsoft-word,002-microsoft-word-input-texts,Microsoft Wordにおける文字の入力,この動画ではMicrosoft Wordにおける文字の入力方法について解説します。
+microsoft-word,003-microsoft-word-change-views-options,Microsoft Wordにおける表示オプション,この動画ではMicrosoft Wordにおける表示オプションについて解説します。
+microsoft-word,004-microsoft-word-save-document,Microsoft Wordにおける文書ファイルの保存,この動画ではMicrosoft Wordにおける文書ファイルの保存について解説します。
+microsoft-word,005-microsoft-word-use-style,Microsoft Wordにおけるスタイルの利用,この動画ではMicrosoft Wordにおけるスタイルの利用について解説します。
+microsoft-word,006-microsoft-word-change-columns,Microsoft Wordにおけるセクション区切りと段組,この動画ではMicrosoft Wordにおけるセクション区切りと段組について解説します。
+microsoft-word,007-microsoft-word-edit-style,Microsoft Wordにおけるスタイルの編集,この動画ではMicrosoft Wordにおけるスタイルの編集について解説します。
+microsoft-word,008-microsoft-word-add-custom-style,Microsoft Wordにおける新しいスタイルの作成,この動画ではMicrosoft Wordにおける新しいスタイルの作成について解説します。
+microsoft-word,009-microsoft-word-overwrite-and-reopen-document,Microsoft Wordにおけるファイルの上書き保存と既存ファイルのオープン,この動画ではMicrosoft Wordにおけるファイルの上書き保存と既存ファイルのオープンについて解説します。
