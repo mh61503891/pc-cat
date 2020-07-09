@@ -2,18 +2,6 @@
 
 ## Develoment
 
-### Run the local server
-
-```sh
-$ ruby -run -e httpd docs -p 8080
-```
-
-### Build documents
-
-```sh
-$ bundle exec exe/generate
-```
-
 ## 1. Screen Recording
 
 1. QuickTime Player -> File -> New Screen Recording -> Record Entire Screen
