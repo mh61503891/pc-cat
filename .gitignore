@@ -1,4 +1,5 @@
-/contents/*
-!/contents/.gitkeep
 /.env
 /tmp
+/crash.log
+/external-content/*
+/tmp-2

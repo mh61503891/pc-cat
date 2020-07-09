@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+ignore '/**/*.csv'
+ignore '/**/*.srt'
+
+compile '/**/*' do
+  case @item[:route_key]
+  when 'root'
+    layout '/root.*'
+    layout '/default.*'
+    filter :relativize_paths, type: :html5
+    write item.identifier.to_s
+  when 'category'
+    layout '/category.*'
+    layout '/default.*'
+    filter :relativize_paths, type: :html5
+    write item.identifier.to_s
+  when 'content'
+    layout '/content.*'
+    layout '/default.*'
+    filter :relativize_paths, type: :html5
+    write item.identifier.to_s
+  else
+    write item.identifier.to_s
+  end
+end
+
+layout '/**/*', :erb

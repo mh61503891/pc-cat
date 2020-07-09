@@ -1,12 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'actionview'
-gem 'actionpack'
-gem 'srt'
-gem 'hashie'
-gem 'openstack'
-gem 'dotenv' # TODO: change to sekrets.gem
-gem 'colorize'
+gem 'nanoc'
+gem 'adsf'
 gem 'activerecord'
 gem 'sqlite3'
+gem 'active_model_serializers'
+gem 'srt'
+gem 'nokogumbo'
 gem 'pry'

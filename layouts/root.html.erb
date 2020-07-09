@@ -1,0 +1,21 @@
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">カテゴリ一覧</li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div class="col-sm-12">
+      <% @item[:categories].each do |category| %>
+       <div class="media position-relative mb-3">
+          <div class="media-body">
+            <h5 class="mt-0 mb-2"><%= category[:title] %></h5>
+            <p><span><%= category[:description] %></span></p>
+            <p><a href="./<%= category[:key] %>" class="btn btn-sm btn-primary stretched-link">閲覧</a></p>
+          </div>
+        </div>
+        <hr>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="../">カテゴリ一覧</a></li>
+      <li class="breadcrumb-item"><a href="./"><%= @item[:category][:title] %></a></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= @item[:content][:title] %></li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="embed-responsive embed-responsive-16by10 sticky-top">
+        <video id="video" class="embed-responsive-item" controls preload="none" poster="<%= @item[:content][:video_poster_url] %>">
+          <source src="<%= @item[:content][:video_src_url] %>" type="video/mp4">
+        </video>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <h4><%= @item[:content][:title] %></h4>
+      <p><%= @item[:content][:description] %></p>
+
+      <% @item[:tracks]&.each&.with_index(1) do |line, index| %>
+      <% id = "#{@item[:content][:key]}-#{index}" %>
+      <div class="media position-relative" id="<%= id %>" data-start-time="<%= line.start_time %>" data-end-time="<%= line.end_time %>" data-title="<%= line.text[0] %>" data-text="<%= line.text[1] %>">
+        <div class="media-body">
+          <h5 class="mt-0">
+            <span class="badge badge-warning"><%= index %></span>
+            <span><%= line.text[0] %></span>
+          </h5>
+          <p>
+            <span><%= line.text[1] %></span>
+            <span class="badge badge-pill badge-light"><%= (line.end_time - line.start_time).to_i %>秒</span>
+            <a href="javascript:runPlayer('<%= id %>');" class="btn btn-sm btn-light"><i data-feather="play-circle">再生</i></a>
+          </p>
+        </div>
+      </div>
+      <% end %>
+
+
+
+    </div>
+  </div>
+</div>
+<script src="/player.js"></script>
