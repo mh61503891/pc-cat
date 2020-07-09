@@ -1,0 +1,31 @@
+#! /usr/bin/env ruby
+
+require 'openstack'
+require 'dotenv'
+Dotenv.load
+
+options = {
+  username: ENV['OS_USERNAME'],
+  api_key: ENV['OS_PASSWORD'],
+  authtenant_name: ENV['OS_TENANT_NAME'],
+  auth_url: ENV['OS_AUTH_URL'],
+  auth_method: 'password',
+  service_type: 'object-store'
+}
+
+os = OpenStack::Connection.create(options)
+
+container_name = 'pc-cat'
+
+
+c = os.container('pc-cat')
+c.container_metadata
+c.objects
+
+require 'pry'
+binding.pry
+
+# https://object-storage.tyo1.conoha.io/v1/nc_9dbd179936404f7482bfccf5368fddb7/pc-cat/001-windows-open-application.mp4
+
+# object storage srrcice endpoint url
+# https://object-storage.tyo1.conoha.io/v1/nc_9dbd179936404f7482bfccf5368fddb7

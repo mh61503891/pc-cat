@@ -1,0 +1,15 @@
+category_key,key,title,description
+microsoft-windows,001-microsoft-windows-open-application,アプリケーションの起動,この動画では様々なアプリケーションの起動方法について解説します。
+microsoft-word,001-microsoft-word-open-application,Microsoft Wordの起動と白紙文書の新規作成,
+microsoft-word,002-microsoft-word-input-text,テキストの入力,
+microsoft-word,003-microsoft-word-change-views-options,表示オプション,
+microsoft-word,004-microsoft-word-save-document,文書ファイルの保存,
+microsoft-word,005-microsoft-word-use-style,スタイルの利用,
+microsoft-word,006-microsoft-word-section-and-column,セクション区切りと段組,
+microsoft-word,007-microsoft-word-edit-style,スタイルの編集,
+microsoft-word,008-microsoft-word-create-custom-style,新しいスタイルの作成,
+microsoft-word,009-microsoft-word-overwrite-and-reopen-document,文書ファイルの上書き保存と既存ファイルのオープン,
+microsoft-word,010-microsoft-word-search-and-save-image,画像の検索と保存,
+microsoft-word,011-microsoft-word-insert-image,画像の挿入,
+microsoft-word,012-microsoft-word-insert-table,表の挿入,
+microsoft-word,013-microsoft-word-citation,参考文献,

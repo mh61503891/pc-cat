@@ -9,8 +9,6 @@ require 'colorize'
 require 'sqlite3'
 require 'active_record'
 
-AppConfig = Hashie::Mash.load('app/config.yaml')
-
 ActiveRecord::Base.establish_connection({
   adapter: 'sqlite3',
   database: ':memory:'
@@ -18,20 +16,36 @@ ActiveRecord::Base.establish_connection({
 
 ActiveRecord::Base.connection.create_table(:categories) do |t|
   t.string :key, null: false
-  t.string :title, null: false
-  t.string :description, null: false
+  t.string :title
+  t.string :description
 end
 ActiveRecord::Base.connection.add_index :categories, [:key], unique: true
 
 ActiveRecord::Base.connection.create_table(:contents) do |t|
   t.string :category_key, null: false
   t.string :key, null: false
-  t.string :title, null: false
-  t.string :description, null: false
+  t.string :title
+  t.string :description
 end
-ActiveRecord::Base.connection.add_index :contents, [:key], unique: true
+ActiveRecord::Base.connection.add_index :contents, [:category_key, :key], unique: true
+
+AppConfig = Hashie::Mash.load('config/app.yaml')
 
 class Category < ActiveRecord::Base
+
+  def title_text
+    title
+  end
+
+  def description_text
+    # TODO: i18n
+    if description.blank?
+      "このカテゴリでは#{title}について解説します。"
+    else
+      description
+    end
+  end
+
 end
 
 class Content < ActiveRecord::Base
@@ -48,31 +62,44 @@ class Content < ActiveRecord::Base
     URI.join(AppConfig.contents_base_url, "#{category_key}/#{key}.mp4").to_s
   end
 
+  def title_text
+    title
+  end
+
+  def description_text
+    # TODO: i18n
+    if description.blank?
+      "この動画では#{category.title_text}における#{title}について解説します。"
+    else
+      description
+    end
+  end
+
 end
 
-CSV.read('app/categories.csv', headers: true).each do |row|
+CSV.read("config/#{AppConfig.lang}/categories.csv", headers: true).each do |row|
   params = {
     key: row['key'],
     title: row['title'],
     description: row['description'],
-  }
+  }.compact
   Category.create!(params)
 end
 
-CSV.read('app/contents.csv', headers: true).each do |row|
+CSV.read("config/#{AppConfig.lang}/contents.csv", headers: true).each do |row|
   params = {
     key: row['key'],
     category_key: row['category_key'],
     title: row['title'],
     description: row['description'],
-  }
+  }.compact
   Content.create!(params)
 end
 
 class View < ActionView::Base
 
   def initialize(assigns = {})
-    paths = ['app/views']
+    paths = ['lib/views']
     lookup_context = ActionView::LookupContext.new(paths)
     super(lookup_context, assigns)
   end
@@ -86,8 +113,8 @@ end
 class Generator
 
   def initialize
-    @config = Hashie::Mash.load('app/config.yaml')
-    @output_dir_path = Pathname.new(__FILE__).join('../..', @config.output_dir_path)
+    @app = Hashie::Mash.load('config/app.yaml')
+    @i18n = Hashie::Mash.load("config/#{@app.lang}/locale.yaml")
   end
 
   def run
@@ -97,12 +124,10 @@ class Generator
   end
 
   def generate_root_page
-    STDERR.puts('Generate Root Page:'.green)
+    STDERR.puts('[Generate Root Page]'.green)
     entry = {
       assigns: {
-        website_title: @config.website_title,
-        website_subtitle: @config.website_subtitle,
-        page_title: 'カテゴリの一覧',
+        i18n: @i18n,
         categories: Category.all,
         root_path: './'
       },
@@ -117,7 +142,7 @@ class Generator
 
 
   def generate_category_pages
-    STDERR.puts('Generate Category Pages:'.green)
+    STDERR.puts('[Generate Category Pages]'.green)
     Category.all.each do |category|
       generate_category_page(category)
     end
@@ -126,9 +151,7 @@ class Generator
   def generate_category_page(category)
     entry = {
       assigns: {
-        website_title: @config.website_title,
-        website_subtitle: @config.website_subtitle,
-        page_title: category.title,
+        i18n: @i18n,
         category: category,
         contents: Content.where(category_key: category.key),
         root_path: '../',
@@ -136,7 +159,7 @@ class Generator
       view: {
         layout: 'layouts/application',
         prefixes: 'contents',
-        template: 'index'
+        template: 'list'
       },
       path: "#{category.key}/index.html"
     }
@@ -144,33 +167,26 @@ class Generator
   end
 
   def generate_content_pages
-    STDERR.puts('Generate Content Pages:'.green)
+    STDERR.puts('[Generate Content Pages]'.green)
     Content.all.each do |content|
       generate_content_page(content)
     end
   end
 
+  def get_video_track(content)
+    return SRT::File.parse(File.new("docs/assets/tracks/#{content.category_key}/#{content.key}.srt"))
+  rescue => e
+    STDERR.puts(e.message.red)
+    return nil
+  end
+
   def generate_content_page(content)
-    video_track = nil
-    begin
-      video_track = SRT::File.parse(File.new(Pathname.new(__FILE__).join('../..', "docs/assets/tracks/#{content.category_key}/#{content.key}.srt")))
-    rescue => e
-      STDERR.puts(e.message.red)
-    end
     entry = {
       assigns: {
-        website_title: @config.website_title,
-        website_subtitle: @config.website_subtitle,
-        page_title: content.title,
-        page_description: content.description,
-        video_track: video_track,
+        i18n: @i18n,
+        video_track: get_video_track(content),
         content: content,
-
-      #   category_url: './',
-      #   category_title: '基本操作',
-      #   page_description: page_description,
-      #   video_poster_url: URI.join(@config.contents_base_url, "#{page_key}.png").to_s,
-      #   video_src_url: URI.join(@config.contents_base_url, "#{page_key}.mp4").to_s,
+        category_url: './',
         root_path: '../',
       },
       view: {
@@ -185,8 +201,7 @@ class Generator
 
   def generate(entry)
     view = View.new(entry.assigns).render(entry.view)
-
-    output_file_path = @output_dir_path.join(entry.path)
+    output_file_path = Pathname.new(@app.output_dir_path).join(entry.path)
     category_dir_path = output_file_path.dirname
     if !category_dir_path.exist?
       category_dir_path.mkdir
@@ -195,8 +210,7 @@ class Generator
     File.open(output_file_path, 'wb') { |io|
       io.puts(view)
     }
-
-    STDERR.puts("generate: #{output_file_path}".yellow)
+    STDERR.puts("generate: #{output_file_path}")
   end
 
 end

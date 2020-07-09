@@ -1,0 +1,26 @@
+<div class="container">
+  <% @i18n.root.alerts.each do |alert| %>
+    <div class="alert alert-<%= alert.theme %>" role="alert">
+      <%= alert.text %>
+    </div>
+  <% end %>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page"><%= @i18n.root.categories %></li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div class="col-sm-12">
+      <% @categories.each do |category| %>
+       <div class="media position-relative mb-3">
+          <div class="media-body">
+            <h5 class="mt-0 mb-2"><%= category.title_text %></h5>
+            <p><span><%= category.description_text %></span></p>
+            <p><a href="./<%= category.key %>" class="btn btn-sm btn-primary stretched-link"><%= @i18n.root.show %></a></p>
+          </div>
+        </div>
+        <hr>
+      <% end %>
+    </div>
+  </div>
+</div>
