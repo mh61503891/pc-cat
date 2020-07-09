@@ -2,6 +2,7 @@ text_extensions: [ 'adoc', 'asciidoc', 'atom', 'coffee', 'css', 'erb', 'haml', '
 
 prune:
   auto_prune: true
+  exclude: [ '.git' ]
 
 data_sources:
   - type: filesystem
@@ -9,4 +10,8 @@ data_sources:
   - type: contents
     items_root: /
 
-output_dir: 'docs'
+deploy:
+  default:
+    kind: git
+    branch: master
+    forced: true
