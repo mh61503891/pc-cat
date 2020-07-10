@@ -31,3 +31,7 @@ $ ls *.mov | xargs -I {} basename {} .mov | xargs -I {} HandBrakeCLI --input {}.
 ```sh
 $ ls *.mp4 | xargs -I {} basename {} .mp4 | xargs -I {} ffmpeg -i {}.mp4 -vf "thumbnail,scale=1024:640" -frames:v 1 {}.png
 ```
+
+```sh
+$ bundle exec nanoc live
+```

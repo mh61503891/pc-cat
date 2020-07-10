@@ -8,3 +8,8 @@ gem 'active_model_serializers'
 gem 'srt'
 gem 'nokogumbo'
 gem 'pry'
+gem 'w3c_validators' # for check css
+
+group :nanoc do
+  gem 'guard-nanoc'
+end
