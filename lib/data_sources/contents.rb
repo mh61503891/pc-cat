@@ -51,7 +51,7 @@ end
 
 class ContentSerializer < ActiveModel::Serializer
 
-  attributes :category_key, :key, :title, :description, :video_poster_url, :video_src_url
+  attributes :category_key, :key, :title, :description
 
   def description
     if object.description.blank?
@@ -59,14 +59,6 @@ class ContentSerializer < ActiveModel::Serializer
     else
       object.description
     end
-  end
-
-  def video_poster_url
-    URI.join('https://object-storage.tyo1.conoha.io/v1/nc_9dbd179936404f7482bfccf5368fddb7/pc-cat/', "#{object.category_key}/#{object.key}.png").to_s
-  end
-
-  def video_src_url
-    URI.join('https://object-storage.tyo1.conoha.io/v1/nc_9dbd179936404f7482bfccf5368fddb7/pc-cat/', "#{object.category_key}/#{object.key}.mp4").to_s
   end
 
 end

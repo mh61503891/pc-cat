@@ -9,8 +9,8 @@
   <div class="row">
     <div class="col-sm-8">
       <div class="embed-responsive embed-responsive-16by10 sticky-top">
-        <video id="video" class="embed-responsive-item" controls preload="none" poster="<%= @item[:content][:video_poster_url] %>">
-          <source src="<%= @item[:content][:video_src_url] %>" type="video/mp4">
+        <video id="video" class="embed-responsive-item" controls preload="none" poster="<%= video_poster_url_for(@item[:content]) %>">
+          <source src="<%= video_src_url_for(@item[:content]) %>" type="video/mp4">
         </video>
       </div>
     </div>

@@ -11,7 +11,7 @@
     <div class="col-sm-12">
       <% @item[:contents].each.with_index(1) do |content, index| %>
        <div class="media position-relative mb-3">
-          <img class="align-self-start img-fluid img-thumbnail mr-3" src="<%= content[:video_poster_url] %>" width="256" alt="<%= content[:title] %>">
+          <img class="align-self-start img-fluid img-thumbnail mr-3" src="<%= video_poster_url_for(content) %>" width="256" alt="<%= content[:title] %>">
           <div class="media-body">
             <h5 class="mt-0 mb-2"><%= index %>. <%= content[:title] %></h5>
             <p><span><%= content[:description] %></span></p>
