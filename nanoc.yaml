@@ -10,6 +10,15 @@ data_sources:
   - type: contents
     items_root: /
 
+checking:
+  enabled_checks:
+    - internal_links
+    - external_links
+    - stale
+    - css
+    - html
+    - mixed_content
+
 deploy:
   default:
     kind: git
