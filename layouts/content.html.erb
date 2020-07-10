@@ -17,7 +17,6 @@
     <div class="col-sm-4">
       <h4><%= @item[:content][:title] %></h4>
       <p><%= @item[:content][:description] %></p>
-
       <% @item[:tracks]&.each&.with_index(1) do |line, index| %>
       <% id = "#{@item[:content][:key]}-#{index}" %>
       <div class="media position-relative" id="<%= id %>" data-start-time="<%= line.start_time %>" data-end-time="<%= line.end_time %>" data-title="<%= line.text[0] %>" data-text="<%= line.text[1] %>">
@@ -34,9 +33,6 @@
         </div>
       </div>
       <% end %>
-
-
-
     </div>
   </div>
 </div>
