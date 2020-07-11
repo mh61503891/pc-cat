@@ -63,6 +63,8 @@ class ContentSerializer < ActiveModel::Serializer
 
 end
 
+require_relative '../helpers'
+
 class CsvDataSource < ::Nanoc::DataSource
 
   identifier :contents
@@ -137,8 +139,11 @@ class CsvDataSource < ::Nanoc::DataSource
       contents(category[:key]).each do |content|
         items << new_item('', {
           route_key: 'content',
-          site_title: '情報リテラシ | コンピュータ演習',
-          page_title: '',
+          site_title: '情報リテラシ &raquo; コンピュータ演習',
+          page_title: "#{category[:title]} &raquo; #{content[:title]}",
+          og_title: "#{category[:title]} &raquo; #{content[:title]}",
+          og_description: content[:description],
+          og_image: video_poster_url_for(content),
           category: category,
           content: content,
           tracks: tracks(content),
