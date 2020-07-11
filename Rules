@@ -25,4 +25,4 @@ compile '/**/*' do
   end
 end
 
-layout '/**/*', :erb
+layout '/**/*.erb', :erb
