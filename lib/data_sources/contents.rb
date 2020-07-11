@@ -67,6 +67,8 @@ require_relative '../helpers'
 
 class CsvDataSource < ::Nanoc::DataSource
 
+  include VideoTag
+
   identifier :contents
 
   def up
