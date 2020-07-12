@@ -67,7 +67,7 @@ require_relative '../helpers'
 
 class CsvDataSource < ::Nanoc::DataSource
 
-  include VideoTag
+  include App::Video
 
   identifier :contents
 
@@ -143,6 +143,14 @@ class CsvDataSource < ::Nanoc::DataSource
           route_key: 'content',
           site_title: '情報リテラシ &raquo; コンピュータ演習',
           page_title: "#{category[:title]} &raquo; #{content[:title]}",
+          twitter_card: {
+            card: 'summary_large_image'
+          },
+          ogp: {
+            title: "#{category[:title]} &raquo; #{content[:title]}",
+            description: content[:description],
+            image: video_poster_url_for(content),
+          },
           og_title: "#{category[:title]} &raquo; #{content[:title]}",
           og_description: content[:description],
           og_image: video_poster_url_for(content),
