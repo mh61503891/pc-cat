@@ -1,0 +1,21 @@
+{
+  "name": "pc-cat",
+  "version": "1.0.0",
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "2.0.5"
+  },
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mh61503891/pc-cat.git"
+  },
+  "author": "Masayuki Higashino",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mh61503891/pc-cat/issues"
+  },
+  "homepage": "https://github.com/mh61503891/pc-cat"
+}
