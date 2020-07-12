@@ -45,12 +45,10 @@ class Player {
 
   playSpeech(id) {
     this.currentSpeechId = id;
-    let text = `${this.getEntry(id).data(
-      "title"
-    )}について解説します。${this.getEntry(id).data("text")}`;
+    let text = `${this.getEntry(id).data('title')}について解説します。${this.getEntry(id).data('text')}`;
     let synthes = new SpeechSynthesisUtterance(text);
     synthes.rate = 0.9;
-    synthes.lang = "ja-JP";
+    synthes.lang = 'ja-JP';
     synthes.onend = (e) => {
       this.currentSpeechId = undefined;
     };
@@ -60,7 +58,7 @@ class Player {
 
   get video() {
     if (this._video === undefined) {
-      this._video = document.getElementById("video");
+      this._video = document.getElementById('video');
     }
     return this._video;
   }
@@ -70,23 +68,19 @@ class Player {
   }
 
   getStartTime(id) {
-    return parseFloat(this.getEntry(id).data("start-time"));
+    return parseFloat(this.getEntry(id).data('start-time'));
   }
 
   getEndTime(id) {
-    return parseFloat(this.getEntry(id).data("end-time"));
+    return parseFloat(this.getEntry(id).data('end-time'));
   }
 
   onPlay() {
-    $(
-      "#" + this.currentVideoId + " div p a svg.feather.feather-play-circle"
-    ).replaceWith(feather.icons["pause-circle"].toSvg());
+    $('#' + this.currentVideoId + ' div p a svg.feather.feather-play-circle').replaceWith(feather.icons['pause-circle'].toSvg());
   }
 
   onPause() {
-    $("svg.feather.feather-pause-circle").replaceWith(
-      feather.icons["play-circle"].toSvg()
-    );
+    $('svg.feather.feather-pause-circle').replaceWith(feather.icons['play-circle'].toSvg());
   }
 
   onTimeupdate() {
@@ -113,16 +107,16 @@ let player;
 
 window.onload = function () {
   player = new Player();
-  player.video.addEventListener("play", () => {
+  player.video.addEventListener('play', () => {
     player.onPlay();
   });
-  player.video.addEventListener("pause", () => {
+  player.video.addEventListener('pause', () => {
     player.onPause();
   });
-  player.video.addEventListener("timeupdate", () => {
+  player.video.addEventListener('timeupdate', () => {
     player.onTimeupdate();
   });
-  document.addEventListener("visibilitychange", function () {
+  document.addEventListener('visibilitychange', function () {
     player.video.pause();
     speechSynthesis.cancel();
   });

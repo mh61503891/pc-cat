@@ -1,0 +1,8 @@
+overrides:
+  - files: "*.html"
+    options:
+      printWidth: 400
+  - files: "*.js"
+    options:
+      printWidth: 400
+      singleQuote: true
