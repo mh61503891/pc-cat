@@ -1,5 +1,4 @@
 class Player {
-
   run(id) {
     this.runVideo(id);
     this.runSpeech(id);
@@ -46,7 +45,7 @@ class Player {
 
   playSpeech(id) {
     this.currentSpeechId = id;
-    let text = `${this.getEntry(id).data('title')}について解説します。${this.getEntry(id).data('text')}`;;
+    let text = `${this.getEntry(id).data('title')}について解説します。${this.getEntry(id).data('text')}`;
     let synthes = new SpeechSynthesisUtterance(text);
     synthes.rate = 0.9;
     synthes.lang = 'ja-JP';
@@ -77,13 +76,11 @@ class Player {
   }
 
   onPlay() {
-    $('#' + this.currentVideoId + " div p a svg.feather.feather-play-circle")
-      .replaceWith(feather.icons['pause-circle'].toSvg());
+    $('#' + this.currentVideoId + ' div p a svg.feather.feather-play-circle').replaceWith(feather.icons['pause-circle'].toSvg());
   }
 
   onPause() {
-    $("svg.feather.feather-pause-circle")
-      .replaceWith(feather.icons['play-circle'].toSvg());
+    $('svg.feather.feather-pause-circle').replaceWith(feather.icons['play-circle'].toSvg());
   }
 
   onTimeupdate() {
@@ -104,21 +101,26 @@ class Player {
       return;
     }
   }
-
 }
 
 let player;
 
 window.onload = function () {
   player = new Player();
-  player.video.addEventListener('play', () => { player.onPlay() });
-  player.video.addEventListener('pause', () => { player.onPause() });
-  player.video.addEventListener('timeupdate', () => { player.onTimeupdate() });
+  player.video.addEventListener('play', () => {
+    player.onPlay();
+  });
+  player.video.addEventListener('pause', () => {
+    player.onPause();
+  });
+  player.video.addEventListener('timeupdate', () => {
+    player.onTimeupdate();
+  });
   document.addEventListener('visibilitychange', function () {
     player.video.pause();
     speechSynthesis.cancel();
   });
-}
+};
 
 function runPlayer(id) {
   player.run(id);
