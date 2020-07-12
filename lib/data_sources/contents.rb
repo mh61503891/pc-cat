@@ -124,15 +124,28 @@ class CsvDataSource < ::Nanoc::DataSource
     items = []
     items << new_item('', {
       route_key: 'root',
-      site_title: '情報リテラシ | コンピュータ演習',
+      site_title: '情報リテラシ &raquo; コンピュータ演習',
       page_title: 'カテゴリ一覧',
+      twitter_card: {
+        card: 'summary'
+      },
+      ogp: {
+        title: '情報リテラシ &raquo; コンピュータ演習',
+      },
       categories: categories
     }, "/index.html")
     categories.each do |category|
       items << new_item('', {
         route_key: 'category',
-        site_title: '情報リテラシ | コンピュータ演習',
+        site_title: '情報リテラシ &raquo; コンピュータ演習',
         page_title: category[:title],
+        twitter_card: {
+          card: 'summary'
+        },
+        ogp: {
+          title: category[:title],
+          description: category[:description]
+        },
         category: category,
         contents: contents(category[:key]),
       }, "/#{category[:key]}/index.html")
@@ -151,9 +164,6 @@ class CsvDataSource < ::Nanoc::DataSource
             description: content[:description],
             image: video_poster_url_for(content),
           },
-          og_title: "#{category[:title]} &raquo; #{content[:title]}",
-          og_description: content[:description],
-          og_image: video_poster_url_for(content),
           category: category,
           content: content,
           tracks: tracks(content),
