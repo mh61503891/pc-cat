@@ -12,7 +12,7 @@
 
 ## 2. Convert videos to MP4
 
-* [HandBrakeCLI: Downloads](https://handbrake.fr/downloads2.php)
+- [HandBrakeCLI: Downloads](https://handbrake.fr/downloads2.php)
 
 For single file:
 
