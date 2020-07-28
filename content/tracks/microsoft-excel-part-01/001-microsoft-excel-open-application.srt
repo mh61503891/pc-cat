@@ -1,0 +1,4 @@
+﻿1
+00:00:00,000 --> 00:00:13,500
+検索ボックスからの「Microsoft Excel」の起動
+「Microsoft Office」をインストールするとプログラムメニューに「Microsoft Word」や「Microsoft Excel」などのアプリケーションが登録されます。この動画では検索ボックスで「Excel」を検索して「Microsoft Excel」を起動しています。「Microsoft Excel」が起動したら、次に「空白のブック」を選択して新しく「ブック」を作成します。「Microsoft Excel」ではひとつのファイルにひとつの「ブック」を作成できます。また、「ブック」の中には複数の「シート」を作成することができます。
