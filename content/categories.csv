@@ -1,4 +1,6 @@
 key,title,description
-microsoft-windows,Microsoft Windowsの基本操作,このページではMicrosoft Officeを使用する際に必要となるMicrosoft Windowsの基本操作について解説します。
+microsoft-windows,Microsoft Windowsの基本操作,このカテゴリではMicrosoft Officeを使用する際に必要となるMicrosoft Windowsの基本操作について解説します。
 microsoft-word,Microsoft Wordの基本操作,
-microsoft-excel-part-01,Microsoft Excelを使った家計簿の作成,このページではMicrosoft Excelを使った家計簿の作成を通して、セルの編集・書式・数式、ピボットテーブル、ビボットグラフの作成について解説します。
+microsoft-excel-part-01,Microsoft Excelを使った家計簿の作成,このカテゴリではMicrosoft Excelを使った家計簿の作成を通して、セルの編集・書式・数式、ピボットテーブル、ビボットグラフの作成について解説します。
+microsoft-excel-part-02,Microsoft Excelを使った散布図の作成,
+microsoft-excel-part-03,Microsoft Excelを使った折れ線グラフの作成,
